@@ -2335,61 +2335,101 @@ let provider;
 let signer;
 let contract;
 
-async function connectWallet() {
-    try {
-        if (!window.ethereum) {
-            document.getElementById('status').innerText = "Please install MetaMask!";
-            return;
-        }
+// Elements
+const connectButton = document.getElementById('connectButton');
+const mintButton = document.getElementById('mintButton');
+const statusElement = document.getElementById('status');
+const walletAddressElement = document.getElementById('walletAddress');
 
-        // Request account access
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
+// 1. Check for MetaMask
+function checkMetaMask() {
+    if (!window.ethereum) {
+        statusElement.textContent = "Please install MetaMask!";
+        connectButton.disabled = true;
+        return false;
+    }
+    return true;
+}
+
+// 2. Connect Wallet
+async function connectWallet() {
+    if (!checkMetaMask()) return;
+
+    try {
+        const accounts = await window.ethereum.request({ 
+            method: "eth_requestAccounts" 
+        });
         
-        // Initialize provider and signer
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
         contract = new ethers.Contract(contractAddress, abi, signer);
 
         // Update UI
-        document.getElementById('connectButton').style.display = 'none';
-        document.getElementById('mintButton').disabled = false;
-        document.getElementById('status').innerText = "Wallet connected!";
+        connectButton.textContent = "Connected ✔";
+        connectButton.disabled = true;
+        mintButton.disabled = false;
+        walletAddressElement.textContent = `Address: ${accounts[0]}`;
+        statusElement.textContent = "Ready to mint!";
 
         // Listen for account changes
         window.ethereum.on('accountsChanged', (accounts) => {
-            if (accounts.length === 0) {
-                document.getElementById('connectButton').style.display = 'block';
-                document.getElementById('mintButton').disabled = true;
-                document.getElementById('status').innerText = "Wallet disconnected.";
+            if (accounts.length > 0) {
+                walletAddressElement.textContent = `Address: ${accounts[0]}`;
+            } else {
+                handleDisconnect();
             }
         });
 
+        // Listen for network changes
+        window.ethereum.on('chainChanged', () => window.location.reload());
+
     } catch (error) {
+        statusElement.textContent = `Connection failed: ${error.message}`;
         console.error(error);
-        document.getElementById('status').innerText = `Error: ${error.message}`;
     }
 }
 
+// 3. Handle Disconnect
+function handleDisconnect() {
+    connectButton.textContent = "Connect Wallet";
+    connectButton.disabled = false;
+    mintButton.disabled = true;
+    walletAddressElement.textContent = "";
+    statusElement.textContent = "Wallet disconnected";
+}
+
+// 4. Mint NFT
 async function mintNFT() {
     try {
-        document.getElementById('mintButton').disabled = true;
-        document.getElementById('status').innerText = "Minting...";
+        mintButton.disabled = true;
+        statusElement.textContent = "Minting... (Confirm in MetaMask)";
         
-        // Check if connected to the correct network (optional)
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        if (chainId !== '93384') { // Replace '0x1' with your contract's network ID (e.g., Ethereum Mainnet)
-            document.getElementById('status').innerText = "Switch to Ethereum Mainnet!";
+        // Check network (Ethereum Mainnet in this example)
+        const chainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (chainId !== "93384") {
+            statusElement.textContent = "Please switch to Ethereum Mainnet";
+            mintButton.disabled = false;
             return;
         }
 
         // Execute mint
         const tx = await http://contract.mint();
+        statusElement.textContent = "Transaction sent...";
+        
         await tx.wait();
-        document.getElementById('status').innerText = "NFT Minted Successfully!";
+        statusElement.textContent = "Mint successful! 🎉";
+        mintButton.disabled = false;
 
     } catch (error) {
+        statusElement.textContent = `Error: ${error.message}`;
+        mintButton.disabled = false;
         console.error(error);
-        document.getElementById('status').innerText = `Minting Failed: ${error.message}`;
-        document.getElementById('mintButton').disabled = false;
     }
 }
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    checkMetaMask();
+    connectButton.addEventListener('click', connectWallet);
+    mintButton.addEventListener('click', mintNFT);
+});
