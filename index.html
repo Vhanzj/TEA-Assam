@@ -7,15 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="mint-container">
-        <h1>Mint Your NFT</h1>
-        <button id="mintButton" onclick="mintNFT()">Mint NFT</button>
-        <p id="status">Connect your wallet to mint.</p>
+    <div class="container">
+        <h1>🍵 Assam Tea NFT Mint</h1>
+        <div class="wallet-section">
+            <button id="connectButton" class="btn">Connect Wallet</button>
+            <div id="walletAddress" class="wallet-address"></div>
+        </div>
+        <button id="mintButton" class="btn" disabled>Mint NFT (0.01 ETH)</button>
+        <p id="status" class="status-text">Connect your wallet to start</p>
     </div>
 
-    <!-- Include Ethers.js library -->
     <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
-    <!-- Include your custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
