@@ -2332,15 +2332,15 @@ const abi = [
 ];
 // Tea.xyz/Assam Network Details (Replace with actual values)
 const TEA_NETWORK = {
-    chainId: "0xYourChainId", // Replace with the actual chain ID (e.g., "0x1234")
-    chainName: "Tea.xyz/Assam Network",
+    chainId: "93384", // Replace with the actual chain ID (e.g., "0x1234")
+    chainName: "Tea-Assam",
     nativeCurrency: {
-        name: "ETH",
-        symbol: "ETH",
+        name: "TEA",
+        symbol: "TEA",
         decimals: 18,
     },
-    rpcUrls: ["https://rpc.tea.xyz"], // Replace with the actual RPC URL
-    blockExplorerUrls: ["https://explorer.tea.xyz"], // Replace with the actual block explorer URL
+    rpcUrls: ["https://assam-rpc.tea.xyz"], // Replace with the actual RPC URL
+    blockExplorerUrls: ["https://assam.tea.xyz"], // Replace with the actual block explorer URL
 };
 
 let provider;
