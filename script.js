@@ -2491,6 +2491,7 @@ async function mintNFT() {
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     checkMetaMask();
-    connectButton.addEventListener('click', connectWallet);
+    
+  connectButton.addEventListener('click', connectWallet);
     mintButton.addEventListener('click', mintNFT);
 });
