@@ -21,5 +21,20 @@
          
      </script>
 
+     <script>
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    console.log(`Wallet connected: ${accounts[0]}`);
+                } catch (error) {
+                    console.error("Error connecting to wallet:", error);
+                }
+            } else {
+                console.log("Please install MetaMask!");
+            }
+        }
+    </script>
+
 </body>
 </html>
