@@ -2332,7 +2332,7 @@ const abi = [
 ];
 // Tea.xyz/Assam Network Details (Replace with actual values)
 const TEA_NETWORK = {
-    chainId: "93384", // Replace with the actual chain ID (e.g., "0x1234")
+    chainId: "0x16cc8", // Replace with the actual chain ID (e.g., "0x1234")
     chainName: "Tea Assam",
     nativeCurrency: {
         name: "TEA",
