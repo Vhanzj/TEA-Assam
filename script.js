@@ -2330,6 +2330,19 @@ const abi = [
     "type": "function"
   }
 ];
+// Tea.xyz/Assam Network Details (Replace with actual values)
+const TEA_NETWORK = {
+    chainId: "0x93384", // Replace with the actual chain ID (e.g., "0x1234")
+    chainName: "tea-assam",
+    nativeCurrency: {
+        name: "TEA",
+        symbol: "TEA",
+        decimals: 18,
+    },
+    rpcUrls: ["assam-rpc.tea.xyz"], // Replace with the actual RPC URL
+    blockExplorerUrls: ["assam.tea.xyz"], // Replace with the actual block explorer URL
+};
+
 
 let provider;
 let signer;
@@ -2351,7 +2364,40 @@ function checkMetaMask() {
     return true;
 }
 
-// 2. Connect Wallet
+// 2. Add Tea.xyz/Assam Network to MetaMask
+async function addTeaNetwork() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [TEA_NETWORK],
+        });
+        statusElement.textContent = "Tea.xyz/Assam network added!";
+    } catch (error) {
+        statusElement.textContent = `Failed to add network: ${error.message}`;
+        console.error(error);
+    }
+}
+
+// 3. Switch to Tea.xyz/Assam Network
+async function switchToTeaNetwork() {
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: TEA_NETWORK.chainId }],
+        });
+        statusElement.textContent = "Switched to Tea.xyz/Assam network!";
+    } catch (error) {
+        if (error.code === 4902) {
+            // Network not added, add it
+            await addTeaNetwork();
+        } else {
+            statusElement.textContent = `Failed to switch network: ${error.message}`;
+            console.error(error);
+        }
+    }
+}
+
+// 4. Connect Wallet
 async function connectWallet() {
     if (!checkMetaMask()) return;
 
@@ -2360,6 +2406,13 @@ async function connectWallet() {
             method: "eth_requestAccounts" 
         });
         
+        // Check if connected to the correct network
+        const chainId = await window.ethereum.request({ method: "eth_chainId" });
+        if (chainId !== TEA_NETWORK.chainId) {
+            await switchToTeaNetwork();
+            return;
+        }
+
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
         contract = new ethers.Contract(contractAddress, abi, signer);
@@ -2381,7 +2434,15 @@ async function connectWallet() {
         });
 
         // Listen for network changes
-        window.ethereum.on('chainChanged', () => window.location.reload());
+        window.ethereum.on('chainChanged', (newChainId) => {
+            if (newChainId !== TEA_NETWORK.chainId) {
+                statusElement.textContent = "Please switch to Tea.xyz/Assam network";
+                mintButton.disabled = true;
+            } else {
+                statusElement.textContent = "Connected to Tea.xyz/Assam network";
+                mintButton.disabled = false;
+            }
+        });
 
     } catch (error) {
         statusElement.textContent = `Connection failed: ${error.message}`;
@@ -2389,7 +2450,7 @@ async function connectWallet() {
     }
 }
 
-// 3. Handle Disconnect
+// 5. Handle Disconnect
 function handleDisconnect() {
     connectButton.textContent = "Connect Wallet";
     connectButton.disabled = false;
@@ -2398,22 +2459,22 @@ function handleDisconnect() {
     statusElement.textContent = "Wallet disconnected";
 }
 
-// 4. Mint NFT
+// 6. Mint NFT
 async function mintNFT() {
     try {
         mintButton.disabled = true;
         statusElement.textContent = "Minting... (Confirm in MetaMask)";
         
-        // Check network (Ethereum Mainnet in this example)
+        // Check network
         const chainId = await window.ethereum.request({ method: "eth_chainId" });
-        if (chainId !== "93384") {
-            statusElement.textContent = "Please switch to Ethereum Mainnet";
+        if (chainId !== TEA_NETWORK.chainId) {
+            statusElement.textContent = "Please switch to Tea.xyz/Assam network";
             mintButton.disabled = false;
             return;
         }
 
         // Execute mint
-        const tx = await http://contract.mint();
+        const tx = await contract.mint();
         statusElement.textContent = "Transaction sent...";
         
         await tx.wait();
