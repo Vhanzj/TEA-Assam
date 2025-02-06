@@ -2448,7 +2448,7 @@ async function connectWallet() {
         console.error(error);
     }
 }
-
+<script src="https://cdn.ethers.io/lib/ethers-5.0.min.js"></script>
 // 5. Handle Disconnect
 function handleDisconnect() {
     connectButton.textContent = "Connect Wallet";
