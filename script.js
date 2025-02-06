@@ -2337,7 +2337,7 @@ const TEA_NETWORK = {
     nativeCurrency: {
         name: "TEA",
         symbol: "TEA",
-        decimals: 18,
+        
     },
     rpcUrls: ["https://assam-rpc.tea.xyz"], // Replace with the actual RPC URL
     blockExplorerUrls: ["https://assam.tea.xyz"], // Replace with the actual block explorer URL
