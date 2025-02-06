@@ -2338,7 +2338,7 @@ const TEA_NETWORK = {
     nativeCurrency: {
         name: "TEA",
         symbol: "TEA",
-        
+        decimals: 18, // Add decimals for the native currency
     },
     rpcUrls: ["https://assam-rpc.tea.xyz"], // Replace with the actual RPC URL
     blockExplorerUrls: ["https://assam.tea.xyz"], // Replace with the actual block explorer URL
@@ -2474,7 +2474,9 @@ async function mintNFT() {
         }
 
         // Execute mint
-        const tx = await contract.mint();
+        const tx = await contract.mint({
+            gasLimit: 300000, // Set a gas limit to avoid out-of-gas errors
+        });
         statusElement.textContent = "Transaction sent...";
         
         await tx.wait();
@@ -2492,6 +2494,6 @@ async function mintNFT() {
 document.addEventListener('DOMContentLoaded', () => {
     checkMetaMask();
     
-  connectButton.addEventListener('click', connectWallet);
+    connectButton.addEventListener('click', connectWallet);
     mintButton.addEventListener('click', mintNFT);
 });
