@@ -1,5 +1,6 @@
 // Replace with your contract address and ABI
 const contractAddress = "0x094eeF5e881C49e954583A2eeC03d4Da34128E53";
+const { ethers } = require("ethers");
 const abi = [
   {
     "inputs": [],
@@ -2448,7 +2449,7 @@ async function connectWallet() {
         console.error(error);
     }
 }
-<script src="https://cdn.ethers.io/lib/ethers-5.0.min.js"></script>
+
 // 5. Handle Disconnect
 function handleDisconnect() {
     connectButton.textContent = "Connect Wallet";
